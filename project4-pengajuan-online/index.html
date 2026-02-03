@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<?!= include('style'); ?>
+</head>
+<body>
+<!-- ================= LOGIN ================= -->
+<div id="login">
+<h3>Login Mahasiswa</h3>
+<input id="nim" placeholder="Masukkan NIM">
+<br><br>
+<button onclick="login()">Login</button>
+<div id="loginNotif"></div>
+</div>
+<!-- ================= APP ================= -->
+<div id="app" style="display:none;">
+<h3 id="info"></h3>
+<h4>Form Pengajuan</h4>
+<select id="jenis">
+<option value="Izin">Izin</option>
+<option value="Sakit">Sakit</option>
+<option value="Keperluan Akademik">Keperluan Akademik</option>
+</select> 
+
+<br><br>
+<textarea id="ket" placeholder="Keterangan pengajuan"></textarea>
+<br><br>
+<button onclick="kirimPengajuan()">Kirim Pengajuan</button>
+<div id="notif"></div>
+<hr>
+<h4>Riwayat Pengajuan</h4>
+<table border="1" width="100%">
+<thead>
+<tr>
+<th>Tanggal</th>
+<th>Jenis</th>
+<th>Keterangan</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="riwayat"></tbody>
+</table>
+<br>
+<button onclick="logout()">Logout</button>
+</div>
+<?!= include('script'); ?>
+</body>
+</html> 
