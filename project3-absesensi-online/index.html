@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<?!= include('style'); ?>
+</head>
+<body>
+<h2> Absensi Online</h2>
+<button id="logoutBtn" onclick="logout()" style="display:none">Logout</button>
+<div id="loginSection">
+<h3>Login Mahasiswa</h3>
+<input type="text" id="nim" placeholder="Masukkan NIM">
+<button onclick="login()">Login</button>
+</div>
+<div id="absensiSection" style="display:none">
+<h3>Form Absensi</h3>
+<input type="text" id="makul" placeholder="Mata Kuliah">
+<select id="status">
+<option value="Hadir">Hadir</option>
+<option value="Izin">Izin</option>
+<option value="Alpha">Alpha</option>
+</select>
+66 <button onclick="submitAbsensi()">Kirim Absensi</button>
+
+<h3>Data Absensi</h3>
+<table border="1" width="100%">
+<thead>
+<tr>
+<th>Nama</th>
+<th>NIM</th>
+<th>Prodi</th>
+<th>Jam</th>
+<th>Makul</th>
+<th>Status</th>
+</tr>
+</thead>
+<tbody id="absensiBody"></tbody>
+</table>
+</div>
+<?!= include('script'); ?>
+</body>
+</html>
