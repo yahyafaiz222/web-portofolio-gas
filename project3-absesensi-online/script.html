@@ -1,0 +1,77 @@
+<script>
+function login() {
+const nim = document.getElementById('nim').value;
+google.script.run
+.withSuccessHandler(handleLogin)
+.login(nim);
+}
+function handleLogin(res) {
+if (res.status === 'success') {
+sessionStorage.setItem('nim', res.nim);
+document.getElementById('loginSection').style.display = 'none';
+document.getElementById('absensiSection').style.display = 'block';
+document.getElementById('logoutBtn').style.display = 'inline-block';
+loadAbsensi();
+} else {
+alert(res.message);
+}
+}
+
+function submitAbsensi() {
+const data = {
+nim: sessionStorage.getItem('nim'),
+makul: document.getElementById('makul').value,
+status: document.getElementById('status').value
+};
+google.script.run
+.withSuccessHandler(res => {
+alert(res.message);
+loadAbsensi();
+})
+.submitAbsensi(data);
+}
+function loadAbsensi() {
+google.script.run
+.withSuccessHandler(renderTable)
+.getAbsensiList();
+}
+
+function renderTable(data) {
+const tbody = document.getElementById('absensiBody');
+tbody.innerHTML = '';
+if (data.length === 0) {
+tbody.innerHTML = '<tr><td colspan="6">Belum ada data</td></tr>';
+return;
+}
+data.forEach(r => {
+tbody.innerHTML += `
+<tr>
+<td>${r.nama}</td>
+<td>${r.nim}</td>
+<td>${r.prodi}</td>
+<td>${r.jam}</td>
+<td>${r.makul}</td>
+<td>${r.status}</td>
+</tr>
+`;
+});
+}
+
+/* ================= LOGOUT ================= */
+function logout() {
+sessionStorage.removeItem('nim');
+document.getElementById('loginSection').style.display = 'block';
+document.getElementById('absensiSection').style.display = 'none';
+document.getElementById('logoutBtn').style.display = 'none';
+}
+/* ================= AUTO LOGIN ================= */
+window.onload = function () {
+const nim = sessionStorage.getItem('nim');
+if (nim) {
+document.getElementById('loginSection').style.display = 'none';
+document.getElementById('absensiSection').style.display = 'block';
+document.getElementById('logoutBtn').style.display = 'inline-block';
+loadAbsensi();
+}
+};
+</script>
