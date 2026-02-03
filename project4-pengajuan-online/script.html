@@ -1,0 +1,128 @@
+<script>
+let user = null;
+/* =====================
+LOGIN
+===================== */
+function login() {
+const nim = document.getElementById('nim').value.trim();
+if (!nim) {
+alert('NIM wajib diisi');
+return;
+}
+google.script.run
+.withSuccessHandler(res => {
+if (res.status === 'success') {
+user = res;
+document.getElementById('login').style.display = 'none';
+document.getElementById('app').style.display = 'block';
+document.getElementById('info').innerText =
+`${res.nama} (${res.prodi})`;
+loadRiwayat();
+} else {
+alert(res.message);
+}
+})
+.withFailureHandler(err => {
+console.error(err);
+alert('Gagal login, cek console');
+})
+.loginMahasiswa(nim);
+}
+
+/* =====================
+SUBMIT PENGAJUAN
+===================== */
+function kirimPengajuan() {
+if (!user) {
+showNotif('Session habis, silakan login ulang', 'error');
+return;
+}
+const jenis = document.getElementById('jenis').value;
+const ket = document.getElementById('ket').value.trim();
+if (!ket) {
+showNotif('Keterangan wajib diisi', 'error');
+return;
+}
+const data = {
+nim: user.nim,
+jenis: jenis,
+keterangan: ket
+};
+
+google.script.run
+.withSuccessHandler(res => {
+if (res.status === 'success') {
+showNotif(res.message, 'success');
+// reset form manual
+document.getElementById('ket').value = '';
+document.getElementById('jenis').selectedIndex = 0;
+// reload riwayat
+loadRiwayat();
+} else {
+showNotif(res.message, 'error');
+}
+})
+.withFailureHandler(err => {
+console.error(err);
+showNotif('Gagal menyimpan pengajuan', 'error');
+})
+.submitPengajuan(data);
+}
+
+/* =====================
+NOTIFIKASI
+===================== */
+function showNotif(msg, type) {
+const notif = document.getElementById('notif');
+notif.innerText = msg;
+notif.style.padding = '10px';
+notif.style.margin = '10px 0';
+notif.style.borderRadius = '6px';
+notif.style.color = '#fff';
+notif.style.background =
+type === 'success' ? '#16a34a' : '#dc2626';
+setTimeout(() => {
+notif.innerText = '';
+notif.style.padding = '0';
+}, 3000);
+}
+
+/* =====================
+RIWAYAT PENGAJUAN
+===================== */
+function loadRiwayat() {
+google.script.run
+.withSuccessHandler(data => {
+const tbody = document.getElementById('riwayat');
+if (!data || data.length === 0) {
+tbody.innerHTML = `
+<tr>
+<td colspan="4" style="text-align:center">
+Belum ada pengajuan
+</td>
+</tr>`;
+return;
+}
+tbody.innerHTML = data.map(r => `
+<tr>
+<td>${r.tanggal}</td>
+<td>${r.jenis}</td>
+<td>${r.keterangan}</td>
+<td>${r.status}</td>
+</tr>
+`).join('');
+})
+.withFailureHandler(err => {
+console.error(err);
+})
+.getRiwayatPengajuan(user.nim);
+}
+/* =====================
+LOGOUT
+===================== */
+function logout() {
+user = null;
+document.getElementById('app').style.display = 'none';
+document.getElementById('login').style.display = 'block';
+}
+</script>
